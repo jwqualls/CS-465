@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const host = process.env.DB_HOST || "127.0.0.1";
 const dbURI = `mongodb://${host}/travlr`;
-const readLine = require('readline');
+const readLine = require("readline");
 
 // avoid 'current Server Discovery and Monitoring engine is deprecated'
 mongoose.set('useUnifiedTopology', true);
@@ -14,22 +14,21 @@ const connect = () => {
 }
 
 mongoose.connection.on('connected', () => {
-  console.log('connected');
+  console.log(`connected to ${dbURI}`);
 });
 
 mongoose.connection.on('error', err => {
-  console.log('error: ' + err);
-  return connect();
+  console.log(`error: `, err);
 });
 
-mongoose.connection.on('disconnected', () => {
-  console.log('disconnected');
+mongoose.connection.on("disconnected", () => {
+  console.log(`disconnected`);
 });
 
 if (process.platform === 'win32') {
   const rl = readLine.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
   rl.on('SIGINT', () => {
     process.emit("SIGINT");
@@ -38,7 +37,7 @@ if (process.platform === 'win32') {
 
 const gracefulShutdown = (msg, callback) => {
   mongoose.connection.close(() => {
-    console.log('Mongoose disconnected through $(msg)');
+    console.log(`Mongoose disconnected through $(msg)`);
     callback();
   });
 };
